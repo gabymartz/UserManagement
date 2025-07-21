@@ -1,4 +1,5 @@
 package com.example.user.management.controller;
+import com.example.user.management.dto.LoginResponse;
 import com.example.user.management.service.LoginService;
 import com.example.user.management.dto.LoginRequest;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,7 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> processLogin(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<LoginResponse> processLogin(@RequestBody LoginRequest loginRequest){
         return loginService.validateCredentials(loginRequest.getUser(), loginRequest.getPassword());
     }
 }

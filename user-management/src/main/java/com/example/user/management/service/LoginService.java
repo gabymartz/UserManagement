@@ -1,5 +1,6 @@
 package com.example.user.management.service;
 
+import com.example.user.management.dto.LoginResponse;
 import com.example.user.management.entity.UserApp;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,13 +17,19 @@ public class LoginService {
         this.userRepository = userRepository;
     }
 
-    public ResponseEntity<String> validateCredentials(String user, String password) {
-        Optional<UserApp> userOpt = userRepository.findByUsername(user);
+    public ResponseEntity<LoginResponse> validateCredentials(String user, String password){
+        Optional<UserApp> userOptional = userRepository.findByUsername(user);
 
-        if (userOpt.isPresent() && userOpt.get().getPassword().equals(password)) {
-            return ResponseEntity.status(HttpStatus.OK).body("Login Successful");
+        if(userOptional.isPresent()) {
+            UserApp savedUserApp = userOptional.get();
+            if(savedUserApp.getPassword().equals(password)){
+                return new ResponseEntity<>(new LoginResponse("Login Successful"), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(new LoginResponse("Wrong Credentials"),HttpStatus.BAD_REQUEST);
+            }
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong credentials");
+            return new ResponseEntity<>(new LoginResponse("Wrong Credentials"),HttpStatus.BAD_REQUEST);
         }
     }
 }
+
